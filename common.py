@@ -34,10 +34,10 @@ class Problem:
     def __init__(self, number: int, name: str) -> None:
         self.number = number
         self.name = name
-        self.url = boj_url + "/problem/" + str(self.number)
+        self.url = f"{boj_url}/problem/{number}"
 
     def __str__(self) -> str:
-        return "Problem({number}, {name}, {url})".format(number=self.number, name=self.name, url=self.url)
+        return f"Problem({self.number}, {self.name}, {self.url})"
 
     def get_problem_readme_template(self, file_dir) -> str:
 
@@ -51,24 +51,24 @@ class WorkBook:
         self.number = number
         self.name = name
         self.language = language
-        self.url = boj_url + "/workbook/view/" + str(number)
+        self.url = f"{boj_url}/workbook/view/{number}"
         self.problems = problems
-        # self.problems_dir = ""
+        self.problems_dir = "result"
 
         match self.language:
             case Language.JAVA:
-                self.problems_dir = "PS/src"
+                self.problems_dir += "/Java/src"
             case Language.PYTHON:
-                self.problems_dir = "PS"
+                self.problems_dir += "/Python"
 
     def __str__(self) -> str:
-        return "WorkBook({number}, {name}, {language}, {url}, {problems_dir}, {p_count})".format(number=self.number, name=self.name, language=self.language, problems_dir=self.problems_dir, url=self.url, p_count=len(self.problems))
+        return f"WorkBook({self.number}, {self.name}, {self.language}, {self.url}, {self.problems_dir}, {self.p_count})"
 
     def append_problems(self, problems: list[Problem]) -> None:
         self.problems.extend(problems)
 
     def make_folders_and_files(self) -> str:
-        workbook_path = "./results/wb_{number}".format(number=self.number)
+        workbook_path = f"{self.problems_dir}/wb_{self.number}"
 
         if (os.path.exists(workbook_path)):
             print("이미 해당 문제집 폴더가 존재합니다. 삭제하고 다시 진행합니다.")
@@ -79,25 +79,26 @@ class WorkBook:
         problem_checks = "";
 
         for problem in self.problems:
-            problem_dir = self.problems_dir + "/" + "pro_{number}".format(number=problem.number)
-            problem_checks += "* [ ] [{number} - {name}]({dir})\n".format(number=problem.number, name=problem.name, dir=problem_dir)
+            # problem_dir = self.problems_dir + "/" + "pro_{number}".format(number=problem.number)
+            problem_dir = f"{workbook_path}/pro_{problem.number}"
+            problem_checks += f"* [ ] [{problem.number} - {problem.name}](pro_{problem.number})\n"
 
-            os.makedirs(workbook_path + "/" + problem_dir)
-            problem_readme = open(workbook_path + "/" + problem_dir + "/" + readme_file_name, "w")
+            os.makedirs(problem_dir)
+            problem_readme = open(f"{problem_dir}/{readme_file_name}", "w")
             match self.language:
                 case Language.JAVA:
-                    java_file = open(workbook_path + "/" + problem_dir + "/" + java_file_name, "w")
+                    java_file = open(f"{problem_dir}/{java_file_name}", "w")
                     java_file.write(problem.get_java_file_template())
                     java_file.close()
                     problem_readme.write(problem.get_problem_readme_template(java_file_name))
                 case Language.PYTHON:
-                    python_file = open(workbook_path + "/" + problem_dir + "/" + str(problem.number) + ".py", "w")
+                    python_file = open(f"{problem_dir}/{problem.number}.py", "w")
                     python_file.close()
-                    problem_readme.write(problem.get_problem_readme_template(str(problem.number) + ".py"))
+                    problem_readme.write(problem.get_problem_readme_template(f"{problem.number}.py"))
             problem_readme.close()
 
 
-        workbook_readme = open(workbook_path + "/" + readme_file_name, "w")
+        workbook_readme = open(f"{workbook_path}/{readme_file_name}", "w")
         workbook_readme.write(self.get_workbook_readme_template(problem_checks))
         workbook_readme.close()
 
@@ -106,7 +107,3 @@ class WorkBook:
     def get_workbook_readme_template(self, problem_checks: str) -> str:
 
         return workbook_readme_template.format(number=self.number, name=self.name, problem_checks=problem_checks, url=self.url)
-
-    
-    def get_checkbox(self, problem: Problem) -> str:
-        return "* [ ] [{number} - {name}]({url})".format(number=problem.number, name=problem.name, url=problem.url)

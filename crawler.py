@@ -41,7 +41,11 @@ workbook = WorkBook(workbook_number, workbook_name, language, problems)
 
 workbook_path = workbook.make_folders_and_files()
 
-print("크롤링 성공 3초뒤에 폴더를 엽니다.")
+print(
+f"""크롤링 성공
+폴더 위치 = {os.getcwd() + workbook_path}
+3초뒤에 폴더를 엽니다."""
+)
 
 time.sleep(3)
 
