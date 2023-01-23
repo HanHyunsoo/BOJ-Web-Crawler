@@ -1,6 +1,7 @@
-from common import *;
-import requests, os, sys, subprocess, time
+from api import *
+from typing import Union
 from bs4 import BeautifulSoup as bs
+import requests, os, sys, subprocess, time
 
 def open_file(filename):
     if sys.platform == "win32":
@@ -18,7 +19,8 @@ headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:108.0
 response = requests.get(workbook_url, headers=headers)
 soup = bs(response.text, "html.parser")
 
-if (response.status_code != 200):
+workbook_name = soup.select_one(".page-header > h1:nth-child(1) > span:nth-child(1)").text # type: ignore
+if (response.status_code != 200 or workbook_name is None):
     raise ConnectionError("해당 번호로 문제집을 찾을 수 없습니다.")
 
 trs = soup.select("table.table.table-striped.table-bordered > tbody > tr")
@@ -27,10 +29,12 @@ problems = []
 
 for tr in trs:
     tds = tr.select("td")
-    problem = Problem(tds[0].text, tds[1].text)
-    problems.append(problem)
 
-workbook_name = soup.select_one(".page-header > h1:nth-child(1) > span:nth-child(1)").text
+    if tds[1].text == "":
+        continue
+
+    problem = Problem(int(tds[0].text), tds[1].text)
+    problems.append(problem)
 
 try:
     language = Language[input("언어 입력(java, python): ").upper()]
@@ -39,7 +43,9 @@ except KeyError:
 
 workbook = WorkBook(workbook_number, workbook_name, language, problems)
 
-workbook_path = workbook.make_folders_and_files()
+given_rank = input("각 문제를 번호대로 정렬하고 티어 별로 문제를 나누겠습니까?(yY, nN): ").upper() == "Y"
+
+workbook_path = workbook.make_folders_and_files(given_rank)
 
 print(
 f"""크롤링 성공
