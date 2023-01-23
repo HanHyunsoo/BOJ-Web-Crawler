@@ -32,4 +32,6 @@
 * [ ] [1920 - 수 찾기](pro_1920)
 * [ ] [10815 - 숫자 카드](pro_10815)
 
-* [출처](https://www.acmicpc.net/workbook/view/10475)
+## Reference
+ 
+[출처](https://www.acmicpc.net/workbook/view/10475)

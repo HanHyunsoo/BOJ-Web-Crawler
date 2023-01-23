@@ -53,24 +53,32 @@ python3 crawler.py
 * Python - 3.10.9
 * MacOS - 13.0.1
 
+> [Case 1](example/Java/src/wb_10475)
 ```bash
 백준 문제집 번호 입력: 10475
 언어 입력(java, python): java
+각 문제를 번호대로 정렬하고 티어 별로 문제를 나누겠습니까?(yY, nN): y
 크롤링 성공
 폴더 위치 = /Users/hanhyunsoo/dev/BOJ Web Crawlerresult/Java/src/wb_10475
 3초뒤에 폴더를 엽니다.
+```
 
+> [Case 2](example/Python/wb_10475)
+```bast
 백준 문제집 번호 입력: 10475
 언어 입력(java, python): python
+각 문제를 번호대로 정렬하고 티어 별로 문제를 나누겠습니까?(yY, nN): n
 크롤링 성공
 폴더 위치 = /Users/hanhyunsoo/dev/BOJ Web Crawlerresult/Python/wb_10475
 3초뒤에 폴더를 엽니다.
 ```
 
-* [Java path](example/Java/src/wb_10475)
-* [Python path](example/Python/wb_10475)
-
 ## ETC
 
 * 너무 많은 요청을 하면 백준 서버측에서 거부할 수 있습니다.
-* wb_{문제집 번호}/README.md 에서 문제들의 순서는 실제 사이트 문제집의 순서를 따릅니다.
+* 티어별로 문제를 나누지 않는다면 wb_{문제집 번호}/README.md 에서 문제들의 순서는 실제 사이트 문제집의 순서를 따릅니다.
+
+## License
+
+* [백준](https://www.acmicpc.net/)
+* [solvedac API](https://solvedac.github.io/unofficial-documentation/)
